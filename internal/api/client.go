@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	DefaultBaseURL = "https://api.packs.sh"
+	DefaultBaseURL = "https://packs-api.fly.dev"
 	EnvBaseURL     = "PACKS_API_URL"
 )
 
