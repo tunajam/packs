@@ -18,7 +18,11 @@ const banner = `                    __
   Skills for AI agents. One command.
 `
 
-var version = "0.1.0"
+var (
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
+)
 
 func main() {
 	rootCmd := &cobra.Command{
