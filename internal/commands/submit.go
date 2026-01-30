@@ -1,10 +1,12 @@
 package commands
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/tunajam/packs/internal/api"
 )
 
 func SubmitCmd() *cobra.Command {
@@ -69,16 +71,25 @@ func runSubmit(ref string) error {
 
 	fmt.Printf("\n  📦 Submitting %s...\n\n", ref)
 
-	// TODO: Connect to packs.sh API for real submission
-	// For now, simulate the process
+	// Submit to API
+	client := api.New()
+	ctx := context.Background()
 	
-	fmt.Printf("  ✓ Validated pack structure\n")
-	fmt.Printf("  ✓ Fetched pack.yaml metadata\n")
-	fmt.Printf("  ✓ Fetched content (SKILL.md)\n")
-	fmt.Printf("  ✓ Computed content hash\n")
+	name, version, message, err := client.Submit(ctx, ref)
+	if err != nil {
+		return fmt.Errorf("failed to submit: %w", err)
+	}
+
 	fmt.Printf("  ✓ Submitted to registry\n")
+	if message != "" {
+		fmt.Printf("  ℹ %s\n", message)
+	}
 	fmt.Printf("\n  🎉 Pack submitted successfully!\n")
-	fmt.Printf("  It will be available shortly via: packs get %s\n\n", parts[2])
+	fmt.Printf("  Available via: packs get %s", name)
+	if version != "" {
+		fmt.Printf("@%s", version)
+	}
+	fmt.Printf("\n\n")
 
 	return nil
 }
