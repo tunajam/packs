@@ -125,8 +125,8 @@ func runFind(query string, packType string, limit int, jsonOutput bool) error {
 		case "prompt":
 			typeIcon = "💬"
 		}
-		fmt.Printf("  %s %-24s %-8s  ★ %-4d  %s\n",
-			typeIcon, p.Name, p.Version, p.Stars, truncate(p.Description, 40))
+		fmt.Printf("  %s %-24s  ★ %-4d  %s\n",
+			typeIcon, p.Name, p.Stars, truncate(p.Description, 40))
 	}
 
 	// If single result, show the exact command and source
@@ -199,8 +199,8 @@ func runFindOffline(query string, packType string, limit int, jsonOutput bool) e
 		case "prompt":
 			typeIcon = "💬"
 		}
-		fmt.Printf("  %s %-24s %-8s  ★ %-4d  %s\n",
-			typeIcon, p.Name, p.Version, p.Stars, truncate(p.Description, 40))
+		fmt.Printf("  %s %-24s  ★ %-4d  %s\n",
+			typeIcon, p.Name, p.Stars, truncate(p.Description, 40))
 	}
 
 	// If single result, show the exact command

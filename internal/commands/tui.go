@@ -347,7 +347,7 @@ func (m model) View() string {
 		typeIcon := getTypeIcon(p.packType)
 
 		s.WriteString(fmt.Sprintf("  %s %s\n", typeIcon, titleStyle.Render(p.name)))
-		s.WriteString(fmt.Sprintf("  %s\n\n", dimStyle.Render(p.version+" · "+p.author)))
+		s.WriteString(fmt.Sprintf("  %s\n\n", dimStyle.Render(p.author)))
 		s.WriteString(fmt.Sprintf("  %s\n\n", p.description))
 		s.WriteString(fmt.Sprintf("  ★ %d stars\n\n", p.stars))
 		s.WriteString(fmt.Sprintf("  %s\n\n", helpStyle.Render("Press ENTER or 'g' to install, ESC to go back")))
@@ -370,11 +370,10 @@ func (m model) View() string {
 			stars := fmt.Sprintf("★ %d", p.stars)
 			desc := truncateStr(p.description, 35)
 
-			line := fmt.Sprintf("%s%s %-22s %s  %-6s  %s",
+			line := fmt.Sprintf("%s%s %-22s  %-6s  %s",
 				cursor,
 				typeIcon,
 				p.name,
-				p.version,
 				stars,
 				desc)
 			s.WriteString(style.Render(line))
