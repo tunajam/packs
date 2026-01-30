@@ -14,7 +14,18 @@ import (
 const (
 	DefaultBaseURL = "https://packs-api.fly.dev"
 	EnvBaseURL     = "PACKS_API_URL"
+	ClientVersion  = "packs-cli/0.1.0"
 )
+
+// clientHeaderTransport adds the X-Packs-Client header to all requests
+type clientHeaderTransport struct {
+	rt http.RoundTripper
+}
+
+func (t *clientHeaderTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	req.Header.Set("X-Packs-Client", ClientVersion)
+	return t.rt.RoundTrip(req)
+}
 
 // Client wraps the Packs API
 type Client struct {
@@ -30,6 +41,9 @@ func New() *Client {
 
 	httpClient := &http.Client{
 		Timeout: 30 * time.Second,
+		Transport: &clientHeaderTransport{
+			rt: http.DefaultTransport,
+		},
 	}
 
 	return &Client{
