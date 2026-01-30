@@ -105,6 +105,13 @@ func WhoamiCmd() *cobra.Command {
 }
 
 func interactiveLogin() error {
+	// First, try to use gh CLI if available
+	if token, user := tryGhCLI(); token != "" {
+		fmt.Printf("✓ Found gh CLI, authenticated as @%s\n", user)
+		return saveTokenQuiet(token)
+	}
+
+	// Fall back to browser OAuth
 	fmt.Println("Opening browser for GitHub authentication...")
 	fmt.Println()
 
@@ -130,6 +137,68 @@ func interactiveLogin() error {
 	}
 
 	return saveToken(token)
+}
+
+// tryGhCLI attempts to get a token from the gh CLI
+func tryGhCLI() (token string, username string) {
+	// Check if gh is installed
+	ghPath, err := exec.LookPath("gh")
+	if err != nil || ghPath == "" {
+		return "", ""
+	}
+
+	// Check if gh is authenticated
+	cmd := exec.Command("gh", "auth", "status")
+	if err := cmd.Run(); err != nil {
+		return "", ""
+	}
+
+	// Get the token
+	cmd = exec.Command("gh", "auth", "token")
+	out, err := cmd.Output()
+	if err != nil {
+		return "", ""
+	}
+	token = strings.TrimSpace(string(out))
+	if token == "" {
+		return "", ""
+	}
+
+	// Verify token works and get username
+	req, _ := http.NewRequest("GET", "https://api.github.com/user", nil)
+	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil || resp.StatusCode != 200 {
+		return "", ""
+	}
+	defer resp.Body.Close()
+
+	var user struct {
+		Login string `json:"login"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&user); err != nil {
+		return "", ""
+	}
+
+	return token, user.Login
+}
+
+// saveTokenQuiet saves token without the verification step (already verified)
+func saveTokenQuiet(token string) error {
+	tokenPath := getTokenPath()
+
+	if err := os.MkdirAll(filepath.Dir(tokenPath), 0700); err != nil {
+		return err
+	}
+
+	if err := os.WriteFile(tokenPath, []byte(token), 0600); err != nil {
+		return err
+	}
+
+	fmt.Printf("  Token saved to %s\n", tokenPath)
+	return nil
 }
 
 func saveToken(token string) error {
