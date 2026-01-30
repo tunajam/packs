@@ -1,13 +1,16 @@
 package commands
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strings"
 
+	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/tunajam/packs/internal/api"
 )
 
 var (
@@ -36,6 +39,9 @@ var (
 
 	accentStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("170"))
+
+	errorStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("196"))
 )
 
 type viewMode int
@@ -57,6 +63,9 @@ type model struct {
 	filter      string // "all", "skill", "context", "prompt"
 	message     string
 	quitting    bool
+	loading     bool
+	spinner     spinner.Model
+	err         error
 }
 
 type pack struct {
@@ -68,42 +77,94 @@ type pack struct {
 	author      string
 }
 
+// Messages for async operations
+type packsLoadedMsg struct {
+	packs []pack
+}
+
+type packsErrorMsg struct {
+	err error
+}
+
+func fetchPacks(filter string) tea.Cmd {
+	return func() tea.Msg {
+		client := api.New()
+		ctx := context.Background()
+		
+		packType := ""
+		if filter != "all" {
+			packType = filter
+		}
+		
+		results, _, err := client.Search(ctx, api.SearchOpts{
+			Query: "",
+			Type:  packType,
+			Limit: 100,
+			Sort:  "stars",
+		})
+		if err != nil {
+			return packsErrorMsg{err: err}
+		}
+
+		packs := make([]pack, len(results))
+		for i, r := range results {
+			packs[i] = pack{
+				name:        r.Name,
+				version:     r.Version,
+				stars:       int(r.Stars),
+				description: r.Description,
+				packType:    r.Type,
+				author:      r.Author,
+			}
+		}
+		return packsLoadedMsg{packs: packs}
+	}
+}
+
 func initialModel() model {
 	ti := textinput.New()
 	ti.Placeholder = "Search packs..."
 	ti.CharLimit = 50
 	ti.Width = 40
 
-	packs := []pack{
-		{name: "commit-message", version: "1.0.0", stars: 892, description: "Generate conventional commit messages", packType: "skill", author: "tunajam"},
-		{name: "pr-description", version: "1.0.0", stars: 654, description: "Write PR descriptions from branch diff", packType: "skill", author: "tunajam"},
-		{name: "humanizer", version: "1.0.0", stars: 543, description: "Remove AI patterns from writing", packType: "skill", author: "blader"},
-		{name: "claudeception", version: "1.0.0", stars: 421, description: "Extract learnings into reusable skills", packType: "skill", author: "blader"},
-		{name: "test-driven-development", version: "1.0.0", stars: 389, description: "TDD workflow for features and bugfixes", packType: "skill", author: "obra"},
-		{name: "brainstorming", version: "1.0.0", stars: 312, description: "Structured ideation and design exploration", packType: "skill", author: "obra"},
-		{name: "react-query", version: "2.1.0", stars: 1247, description: "React Query patterns and best practices", packType: "context", author: "tunajam"},
-		{name: "drizzle-orm", version: "1.0.0", stars: 876, description: "Drizzle ORM conventions and patterns", packType: "context", author: "tunajam"},
-		{name: "changelog-generator", version: "1.0.0", stars: 287, description: "Generate changelogs from git history", packType: "skill", author: "composio"},
-		{name: "git-worktrees", version: "1.0.0", stars: 245, description: "Work with isolated git worktrees", packType: "skill", author: "obra"},
-		{name: "mcp-builder", version: "1.0.0", stars: 534, description: "Build MCP servers for LLM integrations", packType: "skill", author: "composio"},
-		{name: "youtube-transcript", version: "1.0.0", stars: 423, description: "Fetch and summarize YouTube transcripts", packType: "skill", author: "tapestry"},
-	}
+	s := spinner.New()
+	s.Spinner = spinner.Dot
+	s.Style = lipgloss.NewStyle().Foreground(lipgloss.Color("170"))
 
 	m := model{
-		packs:       packs,
-		filtered:    packs,
+		packs:       []pack{},
+		filtered:    []pack{},
 		searchInput: ti,
 		filter:      "all",
+		loading:     true,
+		spinner:     s,
 	}
 	return m
 }
 
 func (m model) Init() tea.Cmd {
-	return nil
+	return tea.Batch(fetchPacks("all"), m.spinner.Tick)
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+	case packsLoadedMsg:
+		m.packs = msg.packs
+		m.filtered = msg.packs
+		m.loading = false
+		m.err = nil
+		return m, nil
+
+	case packsErrorMsg:
+		m.loading = false
+		m.err = msg.err
+		return m, nil
+
+	case spinner.TickMsg:
+		var cmd tea.Cmd
+		m.spinner, cmd = m.spinner.Update(msg)
+		return m, cmd
+
 	case tea.KeyMsg:
 		// Handle search mode
 		if m.mode == viewSearch {
@@ -182,16 +243,24 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case "1":
 			m.filter = "all"
-			m.applyFilters()
+			m.loading = true
+			m.cursor = 0
+			return m, tea.Batch(fetchPacks("all"), m.spinner.Tick)
 		case "2":
 			m.filter = "skill"
-			m.applyFilters()
+			m.loading = true
+			m.cursor = 0
+			return m, tea.Batch(fetchPacks("skill"), m.spinner.Tick)
 		case "3":
 			m.filter = "context"
-			m.applyFilters()
+			m.loading = true
+			m.cursor = 0
+			return m, tea.Batch(fetchPacks("context"), m.spinner.Tick)
 		case "4":
 			m.filter = "prompt"
-			m.applyFilters()
+			m.loading = true
+			m.cursor = 0
+			return m, tea.Batch(fetchPacks("prompt"), m.spinner.Tick)
 		}
 	}
 	return m, nil
@@ -202,11 +271,7 @@ func (m *model) applyFilters() {
 	query := strings.ToLower(m.searchQuery)
 
 	for _, p := range m.packs {
-		// Type filter
-		if m.filter != "all" && p.packType != m.filter {
-			continue
-		}
-		// Search filter
+		// Search filter (type filter is handled by API)
 		if query != "" {
 			if !strings.Contains(strings.ToLower(p.name), query) &&
 				!strings.Contains(strings.ToLower(p.description), query) {
@@ -223,7 +288,7 @@ func (m *model) applyFilters() {
 func (m model) View() string {
 	if m.quitting {
 		if m.selected != nil {
-			return fmt.Sprintf("\n  %s\n  Run: packs get %s\n\n", 
+			return fmt.Sprintf("\n  %s\n  Run: packs get %s\n\n",
 				successStyle.Render("✓"), m.selected.name)
 		}
 		return ""
@@ -262,6 +327,19 @@ func (m model) View() string {
 		s.WriteString("\n")
 	}
 	s.WriteString("  ────────────────────────────────────────────────────\n\n")
+
+	// Loading state
+	if m.loading {
+		s.WriteString(fmt.Sprintf("  %s Loading packs...\n", m.spinner.View()))
+		return s.String()
+	}
+
+	// Error state
+	if m.err != nil {
+		s.WriteString(fmt.Sprintf("  %s %v\n", errorStyle.Render("Error:"), m.err))
+		s.WriteString(helpStyle.Render("  Press q to quit\n"))
+		return s.String()
+	}
 
 	// Detail view
 	if m.mode == viewDetail && m.selected != nil {
