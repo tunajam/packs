@@ -20,7 +20,8 @@ type PackInfo struct {
 	Author      string   `json:"author"`
 	Stars       int      `json:"stars"`
 	Tags        []string `json:"tags,omitempty"`
-	Source      string   `json:"source"` // "registry" or "github"
+	Source      string   `json:"source"`     // "registry" or "github"
+	SourceURL   string   `json:"source_url,omitempty"` // Original attribution URL
 }
 
 func FindCmd() *cobra.Command {
@@ -98,6 +99,7 @@ func runFind(query string, packType string, limit int, jsonOutput bool) error {
 			Stars:       int(p.Stars),
 			Tags:        p.Tags,
 			Source:      "registry",
+			SourceURL:   p.SourceURL,
 		})
 	}
 
@@ -131,7 +133,10 @@ func runFind(query string, packType string, limit int, jsonOutput bool) error {
 	if len(results) == 1 {
 		p := results[0]
 		fmt.Printf("\n  \x1b[32m→\x1b[0m \x1b[1mpacks get %s\x1b[0m\n", p.Name)
-		fmt.Printf("  \x1b[90mSource: gh:tunajam/packs-registry/skills/%s\x1b[0m\n\n", p.Name)
+		if p.SourceURL != "" {
+			fmt.Printf("  \x1b[90mSource: %s\x1b[0m\n", p.SourceURL)
+		}
+		fmt.Printf("\n")
 	} else {
 		fmt.Printf("\n  Run: packs get <name> to install\n\n")
 	}

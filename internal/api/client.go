@@ -57,6 +57,7 @@ type PackSummary struct {
 	Author      string
 	Stars       int32
 	Tags        []string
+	SourceURL   string
 }
 
 // Pack represents a full pack with content
@@ -106,6 +107,7 @@ func (c *Client) Search(ctx context.Context, opts SearchOpts) ([]PackSummary, in
 			Author:      p.Author,
 			Stars:       p.Stars,
 			Tags:        p.Tags,
+			SourceURL:   p.SourceUrl,
 		})
 	}
 

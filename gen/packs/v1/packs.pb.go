@@ -90,6 +90,7 @@ type Pack struct {
 	GithubRef     string                 `protobuf:"bytes,11,opt,name=github_ref,json=githubRef,proto3" json:"github_ref,omitempty"` // e.g., "tunajam/packs-registry/skills/commit-message"
 	CreatedAt     int64                  `protobuf:"varint,12,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	UpdatedAt     int64                  `protobuf:"varint,13,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	SourceUrl     string                 `protobuf:"bytes,14,opt,name=source_url,json=sourceUrl,proto3" json:"source_url,omitempty"` // Original source attribution URL
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -215,6 +216,13 @@ func (x *Pack) GetUpdatedAt() int64 {
 	return 0
 }
 
+func (x *Pack) GetSourceUrl() string {
+	if x != nil {
+		return x.SourceUrl
+	}
+	return ""
+}
+
 // PackSummary is a lightweight pack for listings
 type PackSummary struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -226,6 +234,7 @@ type PackSummary struct {
 	Stars         int32                  `protobuf:"varint,6,opt,name=stars,proto3" json:"stars,omitempty"`
 	Tags          []string               `protobuf:"bytes,7,rep,name=tags,proto3" json:"tags,omitempty"`
 	UpdatedAt     int64                  `protobuf:"varint,8,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	SourceUrl     string                 `protobuf:"bytes,9,opt,name=source_url,json=sourceUrl,proto3" json:"source_url,omitempty"` // Original source attribution URL
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -314,6 +323,13 @@ func (x *PackSummary) GetUpdatedAt() int64 {
 		return x.UpdatedAt
 	}
 	return 0
+}
+
+func (x *PackSummary) GetSourceUrl() string {
+	if x != nil {
+		return x.SourceUrl
+	}
+	return ""
 }
 
 // Search
@@ -885,7 +901,7 @@ var File_packs_v1_packs_proto protoreflect.FileDescriptor
 
 const file_packs_v1_packs_proto_rawDesc = "" +
 	"\n" +
-	"\x14packs/v1/packs.proto\x12\bpacks.v1\"\xf4\x02\n" +
+	"\x14packs/v1/packs.proto\x12\bpacks.v1\"\x93\x03\n" +
 	"\x04Pack\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x18\n" +
 	"\aversion\x18\x02 \x01(\tR\aversion\x12&\n" +
@@ -903,7 +919,9 @@ const file_packs_v1_packs_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\f \x01(\x03R\tcreatedAt\x12\x1d\n" +
 	"\n" +
-	"updated_at\x18\r \x01(\x03R\tupdatedAt\"\xe6\x01\n" +
+	"updated_at\x18\r \x01(\x03R\tupdatedAt\x12\x1d\n" +
+	"\n" +
+	"source_url\x18\x0e \x01(\tR\tsourceUrl\"\x85\x02\n" +
 	"\vPackSummary\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x18\n" +
 	"\aversion\x18\x02 \x01(\tR\aversion\x12&\n" +
@@ -913,7 +931,9 @@ const file_packs_v1_packs_proto_rawDesc = "" +
 	"\x05stars\x18\x06 \x01(\x05R\x05stars\x12\x12\n" +
 	"\x04tags\x18\a \x03(\tR\x04tags\x12\x1d\n" +
 	"\n" +
-	"updated_at\x18\b \x01(\x03R\tupdatedAt\"\xbb\x01\n" +
+	"updated_at\x18\b \x01(\x03R\tupdatedAt\x12\x1d\n" +
+	"\n" +
+	"source_url\x18\t \x01(\tR\tsourceUrl\"\xbb\x01\n" +
 	"\rSearchRequest\x12\x14\n" +
 	"\x05query\x18\x01 \x01(\tR\x05query\x12&\n" +
 	"\x04type\x18\x02 \x01(\x0e2\x12.packs.v1.PackTypeR\x04type\x12\x12\n" +
