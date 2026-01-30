@@ -17,13 +17,17 @@ const (
 	ClientVersion  = "packs-cli/0.1.0"
 )
 
-// clientHeaderTransport adds the X-Packs-Client header to all requests
+// clientHeaderTransport adds required headers to all requests
 type clientHeaderTransport struct {
-	rt http.RoundTripper
+	rt        http.RoundTripper
+	authToken string
 }
 
 func (t *clientHeaderTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	req.Header.Set("X-Packs-Client", ClientVersion)
+	if t.authToken != "" {
+		req.Header.Set("Authorization", "Bearer "+t.authToken)
+	}
 	return t.rt.RoundTrip(req)
 }
 
@@ -34,6 +38,11 @@ type Client struct {
 
 // New creates a new API client
 func New() *Client {
+	return NewWithAuth("")
+}
+
+// NewWithAuth creates a new API client with optional auth token
+func NewWithAuth(authToken string) *Client {
 	baseURL := os.Getenv(EnvBaseURL)
 	if baseURL == "" {
 		baseURL = DefaultBaseURL
@@ -42,7 +51,8 @@ func New() *Client {
 	httpClient := &http.Client{
 		Timeout: 30 * time.Second,
 		Transport: &clientHeaderTransport{
-			rt: http.DefaultTransport,
+			rt:        http.DefaultTransport,
+			authToken: authToken,
 		},
 	}
 

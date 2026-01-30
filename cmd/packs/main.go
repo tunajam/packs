@@ -45,6 +45,9 @@ func main() {
 	rootCmd.AddCommand(commands.InfoCmd())
 	rootCmd.AddCommand(commands.SubmitCmd())
 	rootCmd.AddCommand(commands.ConfigCmd())
+	rootCmd.AddCommand(commands.LoginCmd())
+	rootCmd.AddCommand(commands.LogoutCmd())
+	rootCmd.AddCommand(commands.WhoamiCmd())
 
 	// Global flags
 	rootCmd.PersistentFlags().BoolP("json", "j", false, "Output as JSON")

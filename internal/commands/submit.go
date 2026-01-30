@@ -56,6 +56,12 @@ WHAT HAPPENS:
 }
 
 func runSubmit(ref string) error {
+	// Check for auth token
+	authToken := GetAuthToken()
+	if authToken == "" {
+		return fmt.Errorf("authentication required\n\nRun 'packs login' to authenticate with GitHub")
+	}
+
 	// Normalize @ to gh:
 	if strings.HasPrefix(ref, "@") {
 		ref = ref[1:] // Strip @
@@ -71,8 +77,8 @@ func runSubmit(ref string) error {
 
 	fmt.Printf("\n  📦 Submitting %s...\n\n", ref)
 
-	// Submit to API
-	client := api.New()
+	// Submit to API with auth
+	client := api.NewWithAuth(authToken)
 	ctx := context.Background()
 	
 	name, version, message, err := client.Submit(ctx, ref)
