@@ -126,7 +126,15 @@ func runFind(query string, packType string, limit int, jsonOutput bool) error {
 		fmt.Printf("  %s %-24s %-8s  ★ %-4d  %s\n",
 			typeIcon, p.Name, p.Version, p.Stars, truncate(p.Description, 40))
 	}
-	fmt.Printf("\n  Run: packs get <name> to install\n\n")
+
+	// If single result, show the exact command and source
+	if len(results) == 1 {
+		p := results[0]
+		fmt.Printf("\n  \x1b[32m→\x1b[0m \x1b[1mpacks get %s\x1b[0m\n", p.Name)
+		fmt.Printf("  \x1b[90mSource: gh:tunajam/packs-registry/skills/%s\x1b[0m\n\n", p.Name)
+	} else {
+		fmt.Printf("\n  Run: packs get <name> to install\n\n")
+	}
 
 	return nil
 }
@@ -189,7 +197,14 @@ func runFindOffline(query string, packType string, limit int, jsonOutput bool) e
 		fmt.Printf("  %s %-24s %-8s  ★ %-4d  %s\n",
 			typeIcon, p.Name, p.Version, p.Stars, truncate(p.Description, 40))
 	}
-	fmt.Printf("\n  Run: packs get <name> to install\n\n")
+
+	// If single result, show the exact command
+	if len(packs) == 1 {
+		p := packs[0]
+		fmt.Printf("\n  \x1b[32m→\x1b[0m \x1b[1mpacks get %s\x1b[0m\n\n", p.Name)
+	} else {
+		fmt.Printf("\n  Run: packs get <name> to install\n\n")
+	}
 
 	return nil
 }
