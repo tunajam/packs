@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -11,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/tunajam/packs/internal/api"
 )
 
 func GetCmd() *cobra.Command {
@@ -189,20 +191,31 @@ func getFromGitHub(ref string) (content string, name string, err error) {
 func getFromRegistry(pack string) (content string, name string, err error) {
 	// Parse version if present: pack@version
 	name = pack
-	version := "latest"
+	version := ""
 	if idx := strings.Index(pack, "@"); idx != -1 {
 		name = pack[:idx]
 		version = pack[idx+1:]
 	}
 
-	// TODO: Connect to packs.sh API
-	// For now, try GitHub fallback via packs-registry
-	registryRef := fmt.Sprintf("tunajam/packs-registry/packs/%s", name)
+	// Try API first
+	client := api.New()
+	ctx := context.Background()
+
+	p, err := client.Get(ctx, name, version)
+	if err == nil && p.Content != "" {
+		// Send telemetry
+		osName, arch := GetRuntimeInfo()
+		client.Telemetry(ctx, name, "registry", p.Version, "1.0.0", osName, arch)
+		return p.Content, name, nil
+	}
+
+	// Fallback: try GitHub via packs-registry
+	registryRef := fmt.Sprintf("tunajam/packs-registry/skills/%s", name)
 	content, _, err = getFromGitHub(registryRef)
 	if err != nil {
-		return "", "", fmt.Errorf("pack not found in registry: %s@%s\n\nTry GitHub direct: packs get @user/repo/%s", name, version, name)
+		return "", "", fmt.Errorf("pack not found in registry: %s\n\nTry GitHub direct: packs get @user/repo/%s", name, name)
 	}
-	
+
 	return content, name, nil
 }
 

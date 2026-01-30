@@ -1,0 +1,119 @@
+syntax = "proto3";
+
+package packs.v1;
+
+option go_package = "github.com/tunajam/packs/gen/packs/v1;packsv1";
+
+// PackType represents the type of pack
+enum PackType {
+  PACK_TYPE_UNSPECIFIED = 0;
+  PACK_TYPE_SKILL = 1;
+  PACK_TYPE_CONTEXT = 2;
+  PACK_TYPE_PROMPT = 3;
+}
+
+// Pack represents a skill, context, or prompt pack
+message Pack {
+  string name = 1;
+  string version = 2;
+  PackType type = 3;
+  string description = 4;
+  string author = 5;
+  int32 stars = 6;
+  repeated string tags = 7;
+  string license = 8;
+  string content = 9;
+  string content_hash = 10;
+  string github_ref = 11;  // e.g., "tunajam/packs-registry/skills/commit-message"
+  int64 created_at = 12;
+  int64 updated_at = 13;
+}
+
+// PackSummary is a lightweight pack for listings
+message PackSummary {
+  string name = 1;
+  string version = 2;
+  PackType type = 3;
+  string description = 4;
+  string author = 5;
+  int32 stars = 6;
+  repeated string tags = 7;
+  int64 updated_at = 8;
+}
+
+// Search
+message SearchRequest {
+  string query = 1;
+  PackType type = 2;
+  repeated string tags = 3;
+  string author = 4;
+  int32 limit = 5;
+  int32 offset = 6;
+  string sort = 7;  // relevance, stars, newest, name
+}
+
+message SearchResponse {
+  repeated PackSummary packs = 1;
+  int32 total = 2;
+}
+
+// Get
+message GetRequest {
+  string name = 1;
+  string version = 2;  // empty = latest
+}
+
+message GetResponse {
+  Pack pack = 1;
+}
+
+// Submit (index a GitHub pack)
+message SubmitRequest {
+  string github_ref = 1;  // e.g., "user/repo/path/to/pack"
+}
+
+message SubmitResponse {
+  bool success = 1;
+  string name = 2;
+  string version = 3;
+  string message = 4;
+}
+
+// Telemetry
+message TelemetryEvent {
+  string pack = 1;
+  string source = 2;      // "registry" or "github"
+  string version = 3;
+  string cli_version = 4;
+  string os = 5;
+  string arch = 6;
+}
+
+message TelemetryResponse {}
+
+// List versions
+message ListVersionsRequest {
+  string name = 1;
+}
+
+message ListVersionsResponse {
+  repeated string versions = 1;
+}
+
+// The Packs service
+service PacksService {
+  // Search packs
+  rpc Search(SearchRequest) returns (SearchResponse);
+  
+  // Get a pack by name (and optional version)
+  rpc Get(GetRequest) returns (GetResponse);
+  
+  // Submit a GitHub pack for indexing
+  rpc Submit(SubmitRequest) returns (SubmitResponse);
+  
+  // Record a telemetry event
+  rpc Telemetry(TelemetryEvent) returns (TelemetryResponse);
+  
+  // List all versions of a pack
+  rpc ListVersions(ListVersionsRequest) returns (ListVersionsResponse);
+}

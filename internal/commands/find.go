@@ -1,15 +1,17 @@
 package commands
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/tunajam/packs/internal/api"
 )
 
-// PackInfo represents pack metadata for search results
+// PackInfo represents pack metadata for search results (JSON output)
 type PackInfo struct {
 	Name        string   `json:"name"`
 	Version     string   `json:"version"`
@@ -68,11 +70,71 @@ EXAMPLES:
 }
 
 func runFind(query string, packType string, limit int, jsonOutput bool) error {
-	// TODO: Connect to packs.sh API
-	// For now, return demo data that matches the registry structure
-	
+	client := api.New()
+	ctx := context.Background()
+
+	opts := api.SearchOpts{
+		Query: query,
+		Type:  packType,
+		Limit: int32(limit),
+		Sort:  "stars", // Default sort by popularity
+	}
+
+	packs, total, err := client.Search(ctx, opts)
+	if err != nil {
+		// If API fails, fall back to demo data for offline/dev use
+		return runFindOffline(query, packType, limit, jsonOutput)
+	}
+
+	// Convert to output format
+	var results []PackInfo
+	for _, p := range packs {
+		results = append(results, PackInfo{
+			Name:        p.Name,
+			Version:     p.Version,
+			Type:        p.Type,
+			Description: p.Description,
+			Author:      p.Author,
+			Stars:       int(p.Stars),
+			Tags:        p.Tags,
+			Source:      "registry",
+		})
+	}
+
+	// Output
+	if jsonOutput {
+		enc := json.NewEncoder(os.Stdout)
+		enc.SetIndent("", "  ")
+		return enc.Encode(results)
+	}
+
+	// Human-readable output
+	if len(results) == 0 {
+		fmt.Println("No packs found.")
+		return nil
+	}
+
+	fmt.Printf("\n  Found %d packs (total: %d):\n\n", len(results), total)
+	for _, p := range results {
+		typeIcon := "📦"
+		switch p.Type {
+		case "context":
+			typeIcon = "📚"
+		case "prompt":
+			typeIcon = "💬"
+		}
+		fmt.Printf("  %s %-24s %-8s  ★ %-4d  %s\n",
+			typeIcon, p.Name, p.Version, p.Stars, truncate(p.Description, 40))
+	}
+	fmt.Printf("\n  Run: packs get <name> to install\n\n")
+
+	return nil
+}
+
+// runFindOffline provides fallback demo data when API is unavailable
+func runFindOffline(query string, packType string, limit int, jsonOutput bool) error {
 	packs := getDemoPacks()
-	
+
 	// Filter by query
 	if query != "" {
 		query = strings.ToLower(query)
@@ -115,7 +177,7 @@ func runFind(query string, packType string, limit int, jsonOutput bool) error {
 		return nil
 	}
 
-	fmt.Printf("\n  Found %d packs:\n\n", len(packs))
+	fmt.Printf("\n  Found %d packs (offline mode):\n\n", len(packs))
 	for _, p := range packs {
 		typeIcon := "📦"
 		switch p.Type {
@@ -124,7 +186,7 @@ func runFind(query string, packType string, limit int, jsonOutput bool) error {
 		case "prompt":
 			typeIcon = "💬"
 		}
-		fmt.Printf("  %s %-24s %-8s  ★ %-4d  %s\n", 
+		fmt.Printf("  %s %-24s %-8s  ★ %-4d  %s\n",
 			typeIcon, p.Name, p.Version, p.Stars, truncate(p.Description, 40))
 	}
 	fmt.Printf("\n  Run: packs get <name> to install\n\n")
