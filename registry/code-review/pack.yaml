@@ -1,0 +1,12 @@
+name: code-review
+version: 1.0.0
+type: skill
+description: Review code for bugs, security issues, and improvements
+author: tunajam
+tags:
+  - code-review
+  - security
+  - bugs
+  - quality
+license: MIT
+repository: https://github.com/tunajam/packs

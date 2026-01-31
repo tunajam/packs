@@ -1,0 +1,12 @@
+name: pr-description
+version: 1.0.0
+type: skill
+description: Generate PR descriptions by analyzing git branch changes
+author: tunajam
+tags:
+  - git
+  - github
+  - pull-request
+  - workflow
+license: MIT
+repository: https://github.com/tunajam/packs

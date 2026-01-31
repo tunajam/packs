@@ -1,0 +1,12 @@
+name: write-tests
+version: 1.0.0
+type: prompt
+description: Generate comprehensive tests for code
+author: tunajam
+tags:
+  - testing
+  - unit-tests
+  - test-generation
+  - quality
+license: MIT
+repository: https://github.com/tunajam/packs

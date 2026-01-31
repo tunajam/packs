@@ -1,0 +1,12 @@
+name: refactoring
+version: 1.0.0
+type: skill
+description: Improve code structure without changing behavior
+author: tunajam
+tags:
+  - refactoring
+  - code-quality
+  - clean-code
+  - patterns
+license: MIT
+repository: https://github.com/tunajam/packs

@@ -1,0 +1,12 @@
+name: commit-message
+version: 1.0.0
+type: skill
+description: Generate conventional commit messages from staged changes
+author: tunajam
+tags:
+  - git
+  - commits
+  - conventional-commits
+  - workflow
+license: MIT
+repository: https://github.com/tunajam/packs

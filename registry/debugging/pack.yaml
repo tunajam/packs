@@ -1,0 +1,12 @@
+name: debugging
+version: 1.0.0
+type: skill
+description: Systematic approach to debugging code issues
+author: tunajam
+tags:
+  - debugging
+  - troubleshooting
+  - errors
+  - workflow
+license: MIT
+repository: https://github.com/tunajam/packs

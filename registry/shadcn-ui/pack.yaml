@@ -1,0 +1,12 @@
+name: shadcn-ui
+version: 1.0.0
+type: context
+description: shadcn/ui component patterns and customization
+author: tunajam
+tags:
+  - react
+  - components
+  - ui
+  - shadcn
+license: MIT
+repository: https://github.com/tunajam/packs

@@ -1,0 +1,12 @@
+name: changelog-generator
+version: 1.0.0
+type: skill
+description: Generate changelogs from git history
+author: tunajam
+tags:
+  - git
+  - changelog
+  - release
+  - documentation
+license: MIT
+repository: https://github.com/tunajam/packs

@@ -1,0 +1,12 @@
+name: react-patterns
+version: 1.0.0
+type: context
+description: Modern React patterns and best practices
+author: tunajam
+tags:
+  - react
+  - frontend
+  - patterns
+  - hooks
+license: MIT
+repository: https://github.com/tunajam/packs

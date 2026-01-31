@@ -1,0 +1,12 @@
+name: git-workflow
+version: 1.0.0
+type: context
+description: Git branching strategies and workflows
+author: tunajam
+tags:
+  - git
+  - workflow
+  - branching
+  - version-control
+license: MIT
+repository: https://github.com/tunajam/packs

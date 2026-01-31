@@ -1,0 +1,12 @@
+name: convex
+version: 1.0.0
+type: context
+description: Convex backend patterns and best practices
+author: tunajam
+tags:
+  - convex
+  - backend
+  - database
+  - serverless
+license: MIT
+repository: https://github.com/tunajam/packs

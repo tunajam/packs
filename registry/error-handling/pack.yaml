@@ -1,0 +1,12 @@
+name: error-handling
+version: 1.0.0
+type: skill
+description: Best practices for error handling in applications
+author: tunajam
+tags:
+  - errors
+  - exceptions
+  - debugging
+  - reliability
+license: MIT
+repository: https://github.com/tunajam/packs

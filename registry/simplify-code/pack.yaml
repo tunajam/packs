@@ -1,0 +1,12 @@
+name: simplify-code
+version: 1.0.0
+type: prompt
+description: Simplify and clean up code
+author: tunajam
+tags:
+  - refactoring
+  - clean-code
+  - simplification
+  - readability
+license: MIT
+repository: https://github.com/tunajam/packs

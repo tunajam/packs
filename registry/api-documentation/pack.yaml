@@ -1,0 +1,12 @@
+name: api-documentation
+version: 1.0.0
+type: skill
+description: Write clear API documentation
+author: tunajam
+tags:
+  - documentation
+  - api
+  - rest
+  - openapi
+license: MIT
+repository: https://github.com/tunajam/packs
