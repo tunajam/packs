@@ -285,12 +285,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.cursor = 0
 			m.page = 0
 			return m, tea.Batch(fetchPacks("context"), m.spinner.Tick)
-		case "4":
-			m.filter = "prompt"
-			m.loading = true
-			m.cursor = 0
-			m.page = 0
-			return m, tea.Batch(fetchPacks("prompt"), m.spinner.Tick)
 		}
 	}
 	return m, nil
@@ -342,8 +336,8 @@ func (m model) View() string {
 		s.WriteString("\n")
 	} else {
 		s.WriteString("  ")
-		tabs := []string{"[1] All", "[2] Skills", "[3] Contexts", "[4] Prompts"}
-		filters := []string{"all", "skill", "context", "prompt"}
+		tabs := []string{"[1] All", "[2] Skills", "[3] Contexts"}
+		filters := []string{"all", "skill", "context"}
 		for i, tab := range tabs {
 			if filters[i] == m.filter {
 				s.WriteString(accentStyle.Render(tab))
@@ -427,7 +421,7 @@ func (m model) View() string {
 	}
 
 	s.WriteString("\n\n")
-	s.WriteString(helpStyle.Render("  ↑↓ navigate  ←→ page  ⏎ details  g get  / search  1-4 filter  q quit"))
+	s.WriteString(helpStyle.Render("  ↑↓ navigate  ←→ page  ⏎ details  g get  / search  1-3 filter  q quit"))
 	s.WriteString("\n")
 
 	return s.String()
