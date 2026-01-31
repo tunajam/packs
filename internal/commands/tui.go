@@ -52,10 +52,13 @@ const (
 	viewDetail
 )
 
+const pageSize = 15
+
 type model struct {
 	packs       []pack
 	filtered    []pack
 	cursor      int
+	page        int
 	selected    *pack
 	mode        viewMode
 	searchInput textinput.Model
@@ -212,11 +215,34 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "up", "k":
 			if m.cursor > 0 {
 				m.cursor--
+				// Go to previous page if needed
+				if m.cursor < m.page*pageSize {
+					m.page--
+				}
 			}
 
 		case "down", "j":
 			if m.cursor < len(m.filtered)-1 {
 				m.cursor++
+				// Go to next page if needed
+				if m.cursor >= (m.page+1)*pageSize {
+					m.page++
+				}
+			}
+
+		case "left", "h", "pgup":
+			// Previous page
+			if m.page > 0 {
+				m.page--
+				m.cursor = m.page * pageSize
+			}
+
+		case "right", "l", "pgdown":
+			// Next page
+			maxPage := (len(m.filtered) - 1) / pageSize
+			if m.page < maxPage {
+				m.page++
+				m.cursor = m.page * pageSize
 			}
 
 		case "enter":
@@ -245,21 +271,25 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.filter = "all"
 			m.loading = true
 			m.cursor = 0
+			m.page = 0
 			return m, tea.Batch(fetchPacks("all"), m.spinner.Tick)
 		case "2":
 			m.filter = "skill"
 			m.loading = true
 			m.cursor = 0
+			m.page = 0
 			return m, tea.Batch(fetchPacks("skill"), m.spinner.Tick)
 		case "3":
 			m.filter = "context"
 			m.loading = true
 			m.cursor = 0
+			m.page = 0
 			return m, tea.Batch(fetchPacks("context"), m.spinner.Tick)
 		case "4":
 			m.filter = "prompt"
 			m.loading = true
 			m.cursor = 0
+			m.page = 0
 			return m, tea.Batch(fetchPacks("prompt"), m.spinner.Tick)
 		}
 	}
@@ -283,6 +313,7 @@ func (m *model) applyFilters() {
 
 	m.filtered = filtered
 	m.cursor = 0
+	m.page = 0
 }
 
 func (m model) View() string {
@@ -358,7 +389,16 @@ func (m model) View() string {
 	if len(m.filtered) == 0 {
 		s.WriteString("  No packs found.\n")
 	} else {
-		for i, p := range m.filtered {
+		// Calculate page bounds
+		start := m.page * pageSize
+		end := start + pageSize
+		if end > len(m.filtered) {
+			end = len(m.filtered)
+		}
+		totalPages := (len(m.filtered) + pageSize - 1) / pageSize
+
+		for i := start; i < end; i++ {
+			p := m.filtered[i]
 			cursor := "  "
 			style := normalStyle
 			if m.cursor == i {
@@ -379,10 +419,15 @@ func (m model) View() string {
 			s.WriteString(style.Render(line))
 			s.WriteString("\n")
 		}
+
+		// Page indicator
+		s.WriteString("\n")
+		pageInfo := fmt.Sprintf("  Page %d/%d (%d packs)", m.page+1, totalPages, len(m.filtered))
+		s.WriteString(dimStyle.Render(pageInfo))
 	}
 
-	s.WriteString("\n")
-	s.WriteString(helpStyle.Render("  ↑↓ navigate  ⏎ details  g get  / search  1-4 filter  q quit"))
+	s.WriteString("\n\n")
+	s.WriteString(helpStyle.Render("  ↑↓ navigate  ←→ page  ⏎ details  g get  / search  1-4 filter  q quit"))
 	s.WriteString("\n")
 
 	return s.String()
