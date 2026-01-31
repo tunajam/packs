@@ -52,7 +52,7 @@ const (
 	viewDetail
 )
 
-const pageSize = 15
+const pageSize = 12
 
 type model struct {
 	packs       []pack
