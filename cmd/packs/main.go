@@ -46,6 +46,7 @@ func styledHelp(cmd *cobra.Command, args []string) {
 	fmt.Printf("    %s  %s\n", cmdStyle.Render("packs get <name>  "), descStyle.Render("Install a pack"))
 	fmt.Printf("    %s  %s\n", cmdStyle.Render("packs info <name> "), descStyle.Render("Show pack details"))
 	fmt.Printf("    %s  %s\n", cmdStyle.Render("packs submit <ref>"), descStyle.Render("Submit a pack to registry"))
+	fmt.Printf("    %s  %s\n", cmdStyle.Render("packs config      "), descStyle.Render("Show or set configuration"))
 	fmt.Println()
 	
 	fmt.Println(titleStyle.Render("  GITHUB FETCH"))
