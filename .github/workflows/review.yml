@@ -16,5 +16,6 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           openrouter-api-key: ${{ secrets.OPENROUTER_API_KEY }}
+          posthog-api-key: ${{ secrets.POSTHOG_API_KEY }}
           model: google/gemini-2.0-flash-001
           focus: security,logic,go
