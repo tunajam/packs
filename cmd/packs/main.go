@@ -16,7 +16,7 @@ const banner = `                    __
  / .___/\__,_/\__/_/|_/____/  
 /_/                           
 
-  Skills for AI agents. One command.
+  skills.sh compatible. Enterprise ready.
 `
 
 var (
@@ -72,7 +72,7 @@ func styledHelp(cmd *cobra.Command, args []string) {
 func main() {
 	rootCmd := &cobra.Command{
 		Use:   "packs",
-		Short: "Skills for AI agents. One command.",
+		Short: "skills.sh compatible. Enterprise ready.",
 		Long:  banner + "\n  packs is a TUI-first tool for discovering, installing,\n  and sharing AI skills, prompts, and context.",
 		Run: func(cmd *cobra.Command, args []string) {
 			// No args = launch TUI
