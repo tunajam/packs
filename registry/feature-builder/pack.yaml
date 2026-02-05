@@ -1,0 +1,14 @@
+name: feature-builder
+version: 1.0.0
+type: skill
+description: End-to-end TDD feature development from task to merged PR
+author: tunajam
+tags:
+  - tdd
+  - testing
+  - workflow
+  - development
+  - autonomous
+  - feature
+license: MIT
+repository: https://github.com/tunajam/packs

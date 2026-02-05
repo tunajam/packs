@@ -1,0 +1,14 @@
+name: founder-idea-research
+version: 1.0.0
+type: skill
+description: Multi-source toolkit for finding validated solo founder business ideas
+author: tunajam
+tags:
+  - ideas
+  - research
+  - founder
+  - startup
+  - reddit
+  - validation
+license: MIT
+repository: https://github.com/tunajam/packs

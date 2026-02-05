@@ -1,0 +1,13 @@
+name: email-formatting
+version: 1.0.0
+type: skill
+description: Format professional emails with minimal styling and human voice using MML multipart
+author: tunajam
+tags:
+  - email
+  - writing
+  - formatting
+  - communication
+  - himalaya
+license: MIT
+repository: https://github.com/tunajam/packs

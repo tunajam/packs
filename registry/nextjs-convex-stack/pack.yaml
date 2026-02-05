@@ -1,0 +1,16 @@
+name: nextjs-convex-stack
+version: 1.0.0
+type: skill
+description: Full-stack Next.js 15 + Convex + Clerk + shadcn + PostHog toolkit with TDD
+author: tunajam
+tags:
+  - nextjs
+  - convex
+  - clerk
+  - shadcn
+  - react
+  - typescript
+  - fullstack
+  - tdd
+license: MIT
+repository: https://github.com/tunajam/packs

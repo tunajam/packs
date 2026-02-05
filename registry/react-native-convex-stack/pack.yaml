@@ -1,0 +1,16 @@
+name: react-native-convex-stack
+version: 1.0.0
+type: skill
+description: React Native mobile stack with Expo + Convex + RevenueCat + NativeWind + Maestro TDD
+author: tunajam
+tags:
+  - react-native
+  - expo
+  - convex
+  - mobile
+  - ios
+  - android
+  - revenucat
+  - tdd
+license: MIT
+repository: https://github.com/tunajam/packs

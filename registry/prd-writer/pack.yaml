@@ -1,0 +1,14 @@
+name: prd-writer
+version: 1.0.0
+type: skill
+description: Collaborative PRD creation through guided conversation with testable user stories
+author: tunajam
+tags:
+  - product
+  - prd
+  - planning
+  - user-stories
+  - requirements
+  - specification
+license: MIT
+repository: https://github.com/tunajam/packs
