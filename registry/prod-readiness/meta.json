@@ -1,0 +1,9 @@
+{
+  "name": "prod-readiness",
+  "version": "1.0.0",
+  "type": "skill",
+  "description": "Production readiness checklist — Clerk, Convex, Vercel, Stripe, monitoring, legal",
+  "author": "tunajam",
+  "keywords": ["production", "deployment", "checklist", "launch", "devops"],
+  "license": "MIT"
+}

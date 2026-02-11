@@ -1,0 +1,9 @@
+{
+  "name": "reddit-business-research",
+  "version": "1.0.0",
+  "type": "skill",
+  "description": "Mine Reddit for solo founder business ideas and pain points",
+  "author": "tunajam",
+  "keywords": ["research", "reddit", "business", "ideas", "validation"],
+  "license": "MIT"
+}

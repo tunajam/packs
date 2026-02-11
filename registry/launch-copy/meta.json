@@ -1,0 +1,9 @@
+{
+  "name": "launch-copy",
+  "version": "1.0.0",
+  "type": "skill",
+  "description": "Write compelling product launch copy — landing pages, App Store, Product Hunt, tweets",
+  "author": "tunajam",
+  "keywords": ["copywriting", "marketing", "launch", "landing-page", "product-hunt"],
+  "license": "MIT"
+}
