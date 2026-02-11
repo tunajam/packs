@@ -1,0 +1,9 @@
+{
+  "name": "testing-strategy",
+  "version": "1.0.0",
+  "type": "skill",
+  "description": "When to unit test, integration test, or E2E test — make testing decisions fast",
+  "author": "tunajam",
+  "keywords": ["testing", "unit-test", "integration", "e2e", "tdd", "quality"],
+  "license": "MIT"
+}

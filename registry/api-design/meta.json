@@ -1,0 +1,9 @@
+{
+  "name": "api-design",
+  "version": "1.0.0",
+  "type": "skill",
+  "description": "Design clean REST APIs — consistent, predictable, developer-friendly",
+  "author": "tunajam",
+  "keywords": ["api", "rest", "http", "design", "backend", "web"],
+  "license": "MIT"
+}

@@ -1,0 +1,9 @@
+{
+  "name": "cursor-rules",
+  "version": "1.0.0",
+  "type": "skill",
+  "description": "Write effective .cursorrules files for Cursor AI",
+  "author": "tunajam",
+  "keywords": ["cursor", "cursorrules", "ai", "editor", "configuration"],
+  "license": "MIT"
+}
