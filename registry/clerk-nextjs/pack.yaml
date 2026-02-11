@@ -1,0 +1,12 @@
+name: clerk-nextjs
+version: 1.0.0
+type: skill
+description: Clerk authentication setup for Next.js App Router. Current patterns only - no deprecated APIs. Includes middleware, ClerkProvider, protected routes, and server actions.
+author: tunajam
+license: MIT
+tags:
+  - clerk
+  - nextjs
+  - auth
+  - authentication
+  - app-router

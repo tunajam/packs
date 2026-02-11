@@ -1,0 +1,13 @@
+name: ui-engineering
+version: 1.0.0
+type: skill
+description: UI stability patterns and anti-patterns. Layout stability, loading states, forms, transitions, accessibility. Battle-tested from real builds.
+author: tunajam
+license: MIT
+tags:
+  - ui
+  - frontend
+  - react
+  - accessibility
+  - tailwindcss
+  - layout
