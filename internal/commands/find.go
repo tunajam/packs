@@ -9,6 +9,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/tunajam/packs/internal/api"
+	"github.com/tunajam/packs/internal/telemetry"
 )
 
 // PackInfo represents pack metadata for search results (JSON output)
@@ -86,6 +87,9 @@ func runFind(query string, packType string, limit int, jsonOutput bool) error {
 		// If API fails, fall back to demo data for offline/dev use
 		return runFindOffline(query, packType, limit, jsonOutput)
 	}
+
+	// Track search
+	telemetry.TrackPackSearch(len(query), int(total))
 
 	// Convert to output format
 	var results []PackInfo

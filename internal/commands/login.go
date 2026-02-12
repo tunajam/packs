@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/tunajam/packs/internal/telemetry"
 )
 
 const (
@@ -58,6 +59,7 @@ func LogoutCmd() *cobra.Command {
 				}
 				return err
 			}
+			telemetry.TrackAuth("logout", true)
 			fmt.Println("✓ Logged out")
 			return nil
 		},
@@ -234,6 +236,7 @@ func saveToken(token string) error {
 	}
 	json.NewDecoder(resp.Body).Decode(&user)
 
+	telemetry.TrackAuth("login", true)
 	fmt.Printf("\n✓ Logged in as @%s\n", user.GitHubLogin)
 	fmt.Printf("  Token saved to %s\n", tokenPath)
 	return nil

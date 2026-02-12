@@ -7,6 +7,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
 	"github.com/tunajam/packs/internal/commands"
+	"github.com/tunajam/packs/internal/telemetry"
 )
 
 const banner = `                    __        
@@ -70,6 +71,9 @@ func styledHelp(cmd *cobra.Command, args []string) {
 }
 
 func main() {
+	// Set version for telemetry
+	telemetry.SetVersion(version)
+
 	rootCmd := &cobra.Command{
 		Use:   "packs",
 		Short: "Skills for AI agents. One command.",

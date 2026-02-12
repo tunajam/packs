@@ -13,6 +13,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/tunajam/packs/internal/api"
+	"github.com/tunajam/packs/internal/telemetry"
 )
 
 func GetCmd() *cobra.Command {
@@ -120,6 +121,13 @@ func runGet(pack string, outputDir string, install bool, force bool) error {
 	if err := os.WriteFile(skillPath, []byte(content), 0644); err != nil {
 		return fmt.Errorf("failed to write skill: %w", err)
 	}
+
+	// Track successful install
+	source := "registry"
+	if strings.HasPrefix(pack, "gh:") {
+		source = "github"
+	}
+	telemetry.TrackPackGet(packName, source, true)
 
 	fmt.Printf("✓ Installed %s to %s\n", packName, packDir)
 	return nil
