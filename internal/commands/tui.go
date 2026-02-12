@@ -11,6 +11,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/tunajam/packs/internal/api"
+	"github.com/tunajam/packs/internal/telemetry"
 )
 
 var (
@@ -446,6 +447,9 @@ func truncateStr(s string, max int) string {
 }
 
 func RunTUI() {
+	// Track TUI launch
+	telemetry.TrackTUI("launch")
+
 	p := tea.NewProgram(initialModel())
 	m, err := p.Run()
 	if err != nil {
@@ -455,6 +459,7 @@ func RunTUI() {
 
 	// If a pack was selected, install it
 	if model, ok := m.(model); ok && model.selected != nil {
+		telemetry.TrackTUI("install")
 		fmt.Printf("\n📦 Getting %s...\n\n", model.selected.name)
 		err := runGet(model.selected.name, "", false, false)
 		if err != nil {
