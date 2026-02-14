@@ -1,6 +1,6 @@
 # 🎒 packs
 
-Skills for AI agents. One command.
+skills.sh compatible. Enterprise ready.
 
 ```bash
 brew install packs
